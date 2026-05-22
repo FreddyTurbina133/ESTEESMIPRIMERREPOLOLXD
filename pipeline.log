@@ -1,0 +1,144 @@
+2026-05-22 19:31:21,394 [INFO] ════════════════════════════════════════════════════════════
+2026-05-22 19:31:21,399 [INFO]   INICIO PIPELINE – Clínica Veterinaria
+2026-05-22 19:31:21,400 [INFO] ════════════════════════════════════════════════════════════
+2026-05-22 19:31:21,400 [INFO] ── CARGA ── Leyendo 'mascotas.csv'
+2026-05-22 19:31:21,402 [INFO] Dataset cargado: 50 filas × 11 columnas
+2026-05-22 19:31:21,403 [INFO] Columnas: ['id_mascota', 'nombre', 'especie', 'raza', 'edad_años', 'peso_kg', 'fecha_consulta', 'dueño_nombre', 'dueño_email', 'motivo_consulta', 'costo_consulta']
+2026-05-22 19:31:21,403 [INFO] ── DETECCIÓN: Duplicados ──
+2026-05-22 19:31:21,405 [INFO]   Duplicados EXACTOS (todas las columnas): 0
+2026-05-22 19:31:21,405 [INFO]   Filas con id_mascota repetido: 0 (revisión manual necesaria)
+2026-05-22 19:31:21,405 [INFO] ── DETECCIÓN: Nulos ──
+2026-05-22 19:31:21,409 [INFO] 
+                 nulos  porcentaje_%
+nombre               2           4.0
+especie              2           4.0
+raza                 1           2.0
+edad_años           10          20.0
+peso_kg              1           2.0
+fecha_consulta       1           2.0
+dueño_nombre         2           4.0
+dueño_email          1           2.0
+motivo_consulta      1           2.0
+costo_consulta       1           2.0
+2026-05-22 19:31:21,409 [INFO] ── DETECCIÓN: Outliers en peso_kg ──
+2026-05-22 19:31:21,410 [INFO]   Pesos > 200 kg (imposibles): 3 registro(s)
+2026-05-22 19:31:21,412 [INFO]     id_mascota    nombre especie  peso_kg
+3            4       Rex   perro    350.0
+19          20  Garfield    gato   9999.0
+44          45       Rex   perro    350.0
+2026-05-22 19:31:21,416 [INFO]   Outliers IQR en 'perro': índices [3, 25, 44], valores [350.   68.5 350. ]
+2026-05-22 19:31:21,419 [INFO]   Outliers IQR en 'gato': índices [19, 39], valores [9.999e+03 7.300e+00]
+2026-05-22 19:31:21,420 [INFO] ── LIMPIEZA: Eliminar duplicados exactos y filas nulas ──
+2026-05-22 19:31:21,421 [INFO]   Filas completamente nulas eliminadas: 0
+2026-05-22 19:31:21,422 [INFO]   Duplicados exactos eliminados: 0
+2026-05-22 19:31:21,422 [INFO]   Filas restantes: 50
+2026-05-22 19:31:21,422 [INFO] ── LIMPIEZA: Estandarizar especie ──
+2026-05-22 19:31:21,422 [INFO]   Antes: {'perro': 17, 'gato': 7, 'gata': 5, 'GATO': 4, 'PERRO': 4, 'Perro': 2, 'Cat': 2, nan: 2, 'perra': 2, 'cat': 1, 'PERRA': 1, 'pez': 1, 'GATA': 1, 'Loro': 1}
+2026-05-22 19:31:21,424 [INFO]   Después: {'perro': 26, 'gato': 20, nan: 2, 'pez': 1, 'loro': 1}
+2026-05-22 19:31:21,424 [INFO] ── LIMPIEZA: Imputar edad_años ──
+2026-05-22 19:31:21,424 [INFO]   Nulos antes: 10 | Valores negativos: 1
+2026-05-22 19:31:21,424 [INFO]   Edades negativas corregidas a NaN
+2026-05-22 19:31:21,426 [INFO]   Medianas por especie:
+especie
+gato     5.0
+loro     NaN
+perro    4.0
+pez      NaN
+2026-05-22 19:31:21,429 [INFO]   Nulos después: 2
+2026-05-22 19:31:21,429 [INFO] ── LIMPIEZA: Corregir outliers de peso_kg ──
+2026-05-22 19:31:21,431 [INFO]   Registros con peso > 200 kg antes:
+    id_mascota    nombre  peso_kg
+3            4       Rex    350.0
+19          20  Garfield   9999.0
+44          45       Rex    350.0
+2026-05-22 19:31:21,432 [INFO]   Medianas de peso por especie:
+especie
+gato      4.20
+loro      0.15
+perro    24.60
+pez       0.05
+2026-05-22 19:31:21,434 [INFO]   Pesos nulos restantes: 0
+2026-05-22 19:31:21,434 [INFO] ── LIMPIEZA: Corregir fechas malformadas ──
+2026-05-22 19:31:21,435 [INFO]   Formatos detectados: {'%Y-%m-%d': 32, '%d/%m/%Y': 8, '%Y%m%d': 8}
+2026-05-22 19:31:21,437 [INFO]   Fechas nulas / no parseables: 1
+2026-05-22 19:31:21,437 [INFO] ── TRANSFORMACIÓN: Crear rango_peso ──
+2026-05-22 19:31:21,439 [INFO]   Distribución rango_peso:
+rango_peso
+normal    42
+bajo       4
+alto       3
+obeso      1
+2026-05-22 19:31:21,440 [INFO] ── TRANSFORMACIÓN: Extraer mes y año de fecha_consulta ──
+2026-05-22 19:31:21,441 [INFO]   Rango de fechas: 2023-03-15 00:00:00 → 2024-08-08 00:00:00
+2026-05-22 19:31:21,441 [INFO] ── TRANSFORMACIÓN: Codificar especie con get_dummies ──
+2026-05-22 19:31:21,442 [INFO]   Columnas dummies creadas: ['especie_gato', 'especie_loro', 'especie_perro', 'especie_pez']
+2026-05-22 19:31:21,443 [INFO] ── TRANSFORMACIÓN: Calcular años_cliente ──
+2026-05-22 19:31:21,448 [INFO]   años_cliente → min: 0.0, max: 1.13
+2026-05-22 19:31:21,448 [INFO] ── EXPORTAR ── Guardando en 'mascotas_clean.csv'
+2026-05-22 19:31:21,452 [INFO]   Archivo guardado: 50 filas × 19 columnas
+2026-05-22 19:31:21,452 [INFO] ════════════════════════════════════════════════════════════
+2026-05-22 19:31:21,452 [INFO]   PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-22 19:31:21,452 [INFO] ════════════════════════════════════════════════════════════
+2026-05-22 19:31:21,453 [INFO] 
+Resumen final del dataset limpio:
+id_mascota                  int64
+nombre                        str
+especie                       str
+raza                          str
+edad_años                 float64
+peso_kg                   float64
+fecha_consulta     datetime64[us]
+dueño_nombre                  str
+dueño_email                   str
+motivo_consulta               str
+costo_consulta            float64
+rango_peso                    str
+mes_consulta              float64
+año_consulta              float64
+especie_gato                int64
+especie_loro                int64
+especie_perro               int64
+especie_pez                 int64
+años_cliente              float64
+2026-05-22 19:31:21,467 [INFO] 
+Primeras filas:
+   id_mascota    nombre especie      raza  edad_años  peso_kg fecha_consulta dueño_nombre            dueño_email    motivo_consulta  costo_consulta rango_peso  mes_consulta  año_consulta  especie_gato  especie_loro  especie_perro  especie_pez  años_cliente
+0           1  Firulais   perro  Labrador        3.0     28.5     2023-03-15   Juan Pérez   juan.perez@gmail.com  Control rutinario         25000.0     normal           3.0        2023.0             0             0              1            0           0.0
+1           2  FIRULAIS   perro  labrador        3.0     28.5     2023-03-15   Juan Pérez   juan.perez@gmail.com  Control rutinario         25000.0     normal           3.0        2023.0             0             0              1            0           0.0
+2           3     Mishi    gato    Siamés        5.0      4.2     2023-04-15          NaN  ana.gomez@hotmail.com         Vacunación         18000.0     normal           4.0        2023.0             1             0              0            0           0.0
+2026-05-22 20:13:32,274 - INFO - Iniciando pipeline
+2026-05-22 20:13:32,275 - INFO - Cargando archivo mascotas.csv
+2026-05-22 20:13:32,286 - INFO - Filas cargadas: 50, columnas: 11
+2026-05-22 20:13:32,291 - INFO - Duplicados exactos encontrados: 0
+2026-05-22 20:13:32,295 - INFO - Nulos por columna:
+2026-05-22 20:13:32,296 - INFO -   nombre: 2
+2026-05-22 20:13:32,296 - INFO -   especie: 2
+2026-05-22 20:13:32,296 - INFO -   raza: 1
+2026-05-22 20:13:32,296 - INFO -   edad_años: 10
+2026-05-22 20:13:32,296 - INFO -   peso_kg: 1
+2026-05-22 20:13:32,296 - INFO -   fecha_consulta: 1
+2026-05-22 20:13:32,296 - INFO -   dueño_nombre: 2
+2026-05-22 20:13:32,296 - INFO -   dueño_email: 1
+2026-05-22 20:13:32,296 - INFO -   motivo_consulta: 1
+2026-05-22 20:13:32,296 - INFO -   costo_consulta: 1
+2026-05-22 20:13:32,298 - INFO - Pesos mayores a 200kg (imposibles): 3
+2026-05-22 20:13:32,299 - INFO -   id=4 Rex tiene 350.0kg
+2026-05-22 20:13:32,299 - INFO -   id=20 Garfield tiene 9999.0kg
+2026-05-22 20:13:32,299 - INFO -   id=45 Rex tiene 350.0kg
+2026-05-22 20:13:32,301 - INFO - Filas eliminadas (nulas o duplicadas): 0
+2026-05-22 20:13:32,301 - INFO - Filas restantes: 50
+2026-05-22 20:13:32,302 - INFO - Variantes de especie antes: 13
+2026-05-22 20:13:32,303 - INFO - Variantes de especie despues: 4
+2026-05-22 20:13:32,304 - INFO - Nulos en edad_anos antes: 10
+2026-05-22 20:13:32,305 - INFO - Edades negativas reemplazadas por NaN
+2026-05-22 20:13:32,310 - INFO - Nulos en edad_anos despues: 2
+2026-05-22 20:13:32,310 - INFO - Pesos imposibles antes: 3
+2026-05-22 20:13:32,313 - INFO - Pesos nulos restantes: 0
+2026-05-22 20:13:32,313 - INFO - Corrigiendo formatos de fecha
+2026-05-22 20:13:32,316 - INFO - Fechas nulas despues de parsear: 1
+2026-05-22 20:13:32,318 - INFO - Columna rango_peso creada: {'normal': 42, 'bajo': 4, 'alto': 3, 'obeso': 1}
+2026-05-22 20:13:32,319 - INFO - Columnas mes_consulta y año_consulta creadas
+2026-05-22 20:13:32,321 - INFO - Dummies creados: ['especie_gato', 'especie_loro', 'especie_perro', 'especie_pez']
+2026-05-22 20:13:32,327 - INFO - Columna años_cliente creada
+2026-05-22 20:13:32,335 - INFO - Archivo guardado en mascotas_clean.csv con 50 filas y 19 columnas
+2026-05-22 20:13:32,335 - INFO - Pipeline terminado
